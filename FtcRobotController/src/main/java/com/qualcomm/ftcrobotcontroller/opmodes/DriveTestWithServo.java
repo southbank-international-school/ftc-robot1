@@ -2,17 +2,22 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * Created by julian on 12/01/2016.
  */
-public class DriveTest extends OpMode {
+public class DriveTestWithServo extends OpMode {
 
     DcMotor left_motor;
     DcMotor right_motor;
     DcMotor drive_belt;
+    Servo lock_1;
+    final double lock_1_CLOSED = 0.0;
+    final double lock_1_OPEN = 1.0;
 
-    public DriveTest(){
+
+    public DriveTestWithServo(){
 
     }
     @Override
@@ -21,6 +26,7 @@ public class DriveTest extends OpMode {
         right_motor=hardwareMap.dcMotor.get("rmotor");
         drive_belt=hardwareMap.dcMotor.get("drive_belt");
         left_motor.setDirection(DcMotor.Direction.REVERSE);
+        lock_1=hardwareMap.servo.get("lock_1");
     }
 
     @Override
@@ -32,6 +38,13 @@ public class DriveTest extends OpMode {
         left_motor.setPower(leftY);
         right_motor.setPower(rightY);
         drive_belt.setPower(driveY);
+
+        if(gamepad1.right_bumper) {
+            lock_1.setPosition(lock_1_OPEN);
+        }
+        else if(gamepad1.left_bumper) {
+            lock_1.setPosition(lock_1_CLOSED);
+        }
     }
 
     @Override

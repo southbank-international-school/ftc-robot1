@@ -70,6 +70,8 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register ("DriveTest", DriveTest.class);
     manager.register ("DriveWithTouchSensor", DriveWithTouchSensor.class);
     manager.register ("DriveWithTouchSensorTurnLinear", DriveWithTouchSensorTurnLinear.class);
+    manager.register ("DriveTest2", DriveTest2.class);
+    manager.register ("DriveTestWithServo", DriveTestWithServo.class);
 
     /*
      * Uncomment any of the following lines if you want to register an op mode.
