@@ -3,6 +3,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+//import com.qualcomm.robotcore.util.Range;
 
 /**
  * Created by rCSB14 on 21/11/2015.
@@ -12,13 +13,14 @@ public class ManualControl extends OpMode {
     //
     DcMotor left_motor;
     DcMotor right_motor;
-    DcMotor arm_motor;
-    Servo left_gripper;
-    Servo right_gripper;
-    final double LEFT_OPEN_POSITION = 0.0 ;
-    final double LEFT_CLOSED_POSITION = 0.5 ;
-    final double RIGHT_OPEN_POSITION = 1.0 ;
-    final double RIGHT_CLOSED_POSITION = 0.5 ;
+    DcMotor drive_belt;
+    DcMotor pulley;
+    Servo lock1;
+    Servo lock2;
+    Servo trapdoor;
+    Servo backpiece;
+    //Servo pullback;
+    //double servoOpen = 0.5;
 
     public ManualControl(){
 
@@ -26,11 +28,15 @@ public class ManualControl extends OpMode {
     @Override
     public void init() {
         //get references to the motors and servos from the hardware map
-        arm_motor = hardwareMap.dcMotor.get("arm");
+        pulley = hardwareMap.dcMotor.get("pulley");
         left_motor = hardwareMap.dcMotor.get("lmotor");
         right_motor = hardwareMap.dcMotor.get("rmotor");
-        left_gripper = hardwareMap.servo.get("lgripper");
-        right_gripper = hardwareMap.servo.get("rgripper");
+        drive_belt = hardwareMap.dcMotor.get("drivebelt");
+        lock1 = hardwareMap.servo.get("lock1");
+        lock2 = hardwareMap.servo.get("lock2");
+        trapdoor = hardwareMap.servo.get("trapdoor");
+        backpiece = hardwareMap.servo.get("backpiece");
+       // pullback = hardwareMap.servo.get("pullback");
         //reverse the left motor
         left_motor.setDirection(DcMotor.Direction.REVERSE);
     }
@@ -43,19 +49,49 @@ public class ManualControl extends OpMode {
         //get values from the gamepad (negated because pushing the stick away from you returns a negative value)
         float leftY = -gamepad1.left_stick_y ;
         float rightY = -gamepad1.right_stick_y ;
+        //servoOpen = 0.5;
 
-        left_motor.setPower (leftY);
+        left_motor.setPower(leftY);
         right_motor.setPower(rightY);
-        arm_motor.setPower(-gamepad2.left_stick_y);
+        drive_belt.setPower(-gamepad2.left_stick_y);
+        pulley.setPower(-gamepad2.right_stick_y);
 
-        if(gamepad2.a) {
-            left_gripper.setPosition(LEFT_OPEN_POSITION);
-            right_gripper.setPosition(RIGHT_OPEN_POSITION);
+       // if(gamepad2.y) {
+       //     servoOpen = 1.0;
+       // }
+       // if(gamepad2.a) {
+       //     servoOpen = 0.0;
+       // }
+
+       // servoOpen = Range.clip(servoOpen, 0.0, 1.0);
+
+       // pullback.setPosition(servoOpen);
+
+        if(gamepad1.right_bumper) {
+            lock1.setPosition(1.0);
         }
-        else if(gamepad2.x){
-            left_gripper.setPosition(LEFT_CLOSED_POSITION);
-            right_gripper.setPosition(RIGHT_CLOSED_POSITION);
+        if(gamepad1.left_bumper) {
+            lock1.setPosition(0.0);
         }
+        if(gamepad1.right_bumper) {
+            lock2.setPosition(0.0);
+        }
+        if(gamepad1.left_bumper) {
+            lock2.setPosition(1.0);
+        }
+        if(gamepad2.right_bumper) {
+            trapdoor.setPosition(1.0);
+        }
+        if(gamepad2.left_bumper) {
+            trapdoor.setPosition(0.0);
+        }
+        if(gamepad2.x) {
+            backpiece.setPosition(1.0);
+        }
+        if(gamepad2.b) {
+            backpiece.setPosition(0.0);
+        }
+        //telemetry.addData("servoPosition", "servoOpen:" + String.format("%.2f", pullback));
 
     }
     @Override
@@ -63,6 +99,7 @@ public class ManualControl extends OpMode {
     public void stop() {
         left_motor.setPower (0);
         right_motor.setPower(0);
-        arm_motor.setPower(0);
+        drive_belt.setPower(0);
+        pulley.setPower(0);
     }
 }
